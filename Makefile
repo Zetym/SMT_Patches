@@ -24,3 +24,15 @@ launch: install
 uninstall:
 	rm -f $(GAME_DIR)BepInEx/Plugins/$(MODULE_NAME).dll
 
+package: release
+ifneq ($(VERSION),)
+	@echo $(VERSION:.=_) $(VERSION:%.=%_) $(subst .,_,$(VERSION))
+	rm -rf releases/$(VERSION)
+	mkdir -p releases/$(VERSION)/$(MODULE_NAME)
+	cp bin/Release/netstandard2.1/$(MODULE_NAME).dll LICENSE README.md releases/$(VERSION)/$(MODULE_NAME)/
+	cd releases/$(VERSION); \
+	7z a -tzip $(MODULE_NAME)_$(subst .,_,$(VERSION)).zip $(MODULE_NAME)
+else
+	@echo VERSION undefined. Can't package without it
+	@echo Run again with  make -e VERSION=vX.Y.Z
+endif
